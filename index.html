@@ -388,7 +388,6 @@
     let stored = localStorage.getItem(timerKey);
     if (stored) {
       let parsed = parseInt(stored, 10);
-      // Se o timestamp armazenado já passou, reiniciamos
       if (parsed <= Date.now()) {
         let newTarget = Date.now() + SEVEN_DAYS;
         localStorage.setItem(timerKey, newTarget);
@@ -407,7 +406,6 @@
   function updateTimer() {
     let remaining = targetTimestamp - Date.now();
     if (remaining <= 0) {
-      // Se expirou, reiniciamos o timer para +7 dias
       targetTimestamp = Date.now() + SEVEN_DAYS;
       localStorage.setItem(timerKey, targetTimestamp);
       remaining = SEVEN_DAYS;
@@ -482,5 +480,174 @@
     document.getElementById('offerSection').scrollIntoView({ behavior: 'smooth', block: 'center' });
   });
 </script>
+
+<!-- ========== BOTÃO WHATSAPP COM MODAL (POSICIONADO À DIREITA, ACIMA DO BOTÃO ACESSAR PROTOCOLO) ========== -->
+<style>
+  /* Botão WhatsApp fixo inferior direito, acima do botão principal */
+  .whatsapp-float {
+    position: fixed;
+    bottom: 95px;   /* 25px (bottom do botão original) + 60px (altura do botão) + 10px de margem = 95px */
+    right: 20px;
+    background-color: #25D366;
+    color: white;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    cursor: pointer;
+    z-index: 1001;
+    transition: all 0.2s ease;
+    border: none;
+  }
+  .whatsapp-float:hover {
+    transform: scale(1.05);
+    background-color: #20b859;
+  }
+  /* Em mobile, ajustar para não sobrepor */
+  @media (max-width: 680px) {
+    .whatsapp-float {
+      bottom: 80px;  /* 15px (bottom do botão original em mobile) + 50px (altura aprox) + 10px = 75px, arredondado */
+      width: 50px;
+      height: 50px;
+      font-size: 1.6rem;
+      right: 12px;
+    }
+  }
+  /* Modal de contacto (igual ao anterior) */
+  .modal-wa {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.8);
+    z-index: 1002;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(4px);
+  }
+  .modal-wa-content {
+    background: #1e1e1e;
+    max-width: 450px;
+    width: 90%;
+    border-radius: 28px;
+    padding: 24px;
+    position: relative;
+    border: 1px solid #25D366;
+    box-shadow: 0 0 25px rgba(37,211,102,0.4);
+  }
+  .modal-wa-content h3 {
+    color: #25D366;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  .modal-wa-content input,
+  .modal-wa-content textarea {
+    width: 100%;
+    padding: 12px;
+    margin: 8px 0;
+    background: #2a2a2a;
+    border: 1px solid #444;
+    border-radius: 16px;
+    color: white;
+    font-family: inherit;
+  }
+  .modal-wa-content textarea {
+    min-height: 80px;
+    resize: vertical;
+  }
+  .modal-wa-content button {
+    background: #25D366;
+    color: white;
+    border: none;
+    padding: 12px;
+    width: 100%;
+    border-radius: 40px;
+    font-weight: bold;
+    font-size: 1rem;
+    margin-top: 12px;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+  .modal-wa-content button:hover {
+    background: #1da152;
+  }
+  .close-modal-wa {
+    position: absolute;
+    top: 12px;
+    right: 20px;
+    font-size: 1.8rem;
+    cursor: pointer;
+    color: #aaa;
+    transition: 0.2s;
+  }
+  .close-modal-wa:hover {
+    color: white;
+  }
+</style>
+
+<button class="whatsapp-float" id="whatsappFloatBtn">
+  <i class="fab fa-whatsapp"></i>
+</button>
+
+<div id="waModal" class="modal-wa">
+  <div class="modal-wa-content">
+    <span class="close-modal-wa" id="closeModalWa">&times;</span>
+    <h3><i class="fab fa-whatsapp"></i> Fale connosco</h3>
+    <form id="waForm">
+      <input type="text" id="waNome" placeholder="Seu nome" required>
+      <input type="email" id="waEmail" placeholder="Seu e-mail" required>
+      <input type="tel" id="waTelefone" placeholder="Seu telefone (com DDD)" required>
+      <textarea id="waMensagem" placeholder="Como podemos ajudar? (dúvida, suporte, etc.)" required></textarea>
+      <button type="submit">Enviar pelo WhatsApp</button>
+    </form>
+    <p style="font-size: 0.7rem; text-align: center; margin-top: 12px;">Responderemos o mais breve possível</p>
+  </div>
+</div>
+
+<script>
+  // Elementos WhatsApp
+  const waBtn = document.getElementById('whatsappFloatBtn');
+  const waModal = document.getElementById('waModal');
+  const closeModalWa = document.getElementById('closeModalWa');
+  const waForm = document.getElementById('waForm');
+
+  waBtn.addEventListener('click', () => {
+    waModal.style.display = 'flex';
+  });
+  closeModalWa.addEventListener('click', () => {
+    waModal.style.display = 'none';
+  });
+  waModal.addEventListener('click', (e) => {
+    if (e.target === waModal) waModal.style.display = 'none';
+  });
+
+  waForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const nome = document.getElementById('waNome').value.trim();
+    const email = document.getElementById('waEmail').value.trim();
+    const telefone = document.getElementById('waTelefone').value.trim();
+    const mensagem = document.getElementById('waMensagem').value.trim();
+    // Substituímos o URL da página por "PROTOCOLO 72"
+    const pagina = "PROTOCOLO 72";
+
+    if (!nome || !email || !telefone || !mensagem) {
+      alert('Por favor, preencha todos os campos.');
+      return;
+    }
+
+    const texto = `*NOVO CONTATO VIA PROTOCOLO 72*%0A%0A*Nome:* ${encodeURIComponent(nome)}%0A*E-mail:* ${encodeURIComponent(email)}%0A*Telefone:* ${encodeURIComponent(telefone)}%0A*Página:* ${encodeURIComponent(pagina)}%0A*Mensagem:* ${encodeURIComponent(mensagem)}`;
+    const numero = '351962146991';
+
+    window.open(`https://wa.me/${numero}?text=${texto}`, '_blank');
+    waModal.style.display = 'none';
+    waForm.reset();
+  });
+</script>
 </body>
-          </html>
+</html>
