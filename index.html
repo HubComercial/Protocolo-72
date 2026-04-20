@@ -4,6 +4,16 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
 <title>PROTOCOLO 72 | Manual Civil de Sobrevivência às Primeiras 72 Horas</title>
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-KVD97FG7FZ"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-KVD97FG7FZ');
+</script>
+
 <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <style>
@@ -486,7 +496,7 @@
   /* Botão WhatsApp fixo inferior direito, acima do botão principal */
   .whatsapp-float {
     position: fixed;
-    bottom: 95px;   /* 25px (bottom do botão original) + 60px (altura do botão) + 10px de margem = 95px */
+    bottom: 95px;
     right: 20px;
     background-color: #25D366;
     color: white;
@@ -507,17 +517,15 @@
     transform: scale(1.05);
     background-color: #20b859;
   }
-  /* Em mobile, ajustar para não sobrepor */
   @media (max-width: 680px) {
     .whatsapp-float {
-      bottom: 80px;  /* 15px (bottom do botão original em mobile) + 50px (altura aprox) + 10px = 75px, arredondado */
+      bottom: 80px;
       width: 50px;
       height: 50px;
       font-size: 1.6rem;
       right: 12px;
     }
   }
-  /* Modal de contacto (igual ao anterior) */
   .modal-wa {
     display: none;
     position: fixed;
@@ -611,21 +619,14 @@
 </div>
 
 <script>
-  // Elementos WhatsApp
   const waBtn = document.getElementById('whatsappFloatBtn');
   const waModal = document.getElementById('waModal');
   const closeModalWa = document.getElementById('closeModalWa');
   const waForm = document.getElementById('waForm');
 
-  waBtn.addEventListener('click', () => {
-    waModal.style.display = 'flex';
-  });
-  closeModalWa.addEventListener('click', () => {
-    waModal.style.display = 'none';
-  });
-  waModal.addEventListener('click', (e) => {
-    if (e.target === waModal) waModal.style.display = 'none';
-  });
+  waBtn.addEventListener('click', () => { waModal.style.display = 'flex'; });
+  closeModalWa.addEventListener('click', () => { waModal.style.display = 'none'; });
+  waModal.addEventListener('click', (e) => { if (e.target === waModal) waModal.style.display = 'none'; });
 
   waForm.addEventListener('submit', (e) => {
     e.preventDefault();
@@ -633,7 +634,6 @@
     const email = document.getElementById('waEmail').value.trim();
     const telefone = document.getElementById('waTelefone').value.trim();
     const mensagem = document.getElementById('waMensagem').value.trim();
-    // Substituímos o URL da página por "PROTOCOLO 72"
     const pagina = "PROTOCOLO 72";
 
     if (!nome || !email || !telefone || !mensagem) {
@@ -643,7 +643,6 @@
 
     const texto = `*NOVO CONTATO VIA PROTOCOLO 72*%0A%0A*Nome:* ${encodeURIComponent(nome)}%0A*E-mail:* ${encodeURIComponent(email)}%0A*Telefone:* ${encodeURIComponent(telefone)}%0A*Página:* ${encodeURIComponent(pagina)}%0A*Mensagem:* ${encodeURIComponent(mensagem)}`;
     const numero = '351962146991';
-
     window.open(`https://wa.me/${numero}?text=${texto}`, '_blank');
     waModal.style.display = 'none';
     waForm.reset();
